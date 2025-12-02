@@ -37,9 +37,11 @@ apiVersion: tekton.dev/v1beta1
 kind: Task
 name: nose
 spec:
-  description: Arguments to pass to nose
   workspaces:
     - name: source
+  params:
+    - name: args
+      description: Arguments to pass to nose
       type: string
       default: "-v"
   steps:
