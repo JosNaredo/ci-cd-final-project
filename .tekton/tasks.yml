@@ -61,29 +61,3 @@ spec:
           pip install -r requirements.txt
           nosetests $(params.args)
 ---
-apiVersion: v1
-kind: Pod
-metadata:
-  name: openshift-pods-output-uhy5mw-git-clone-pod
-spec:
-  # Add securityContext at the Pod level (optional, but good practice)
-  securityContext:
-    runAsNonRoot: true
-    seccompProfile:
-      type: RuntimeDefault
-  
-  containers:
-    # Apply to all listed containers: prepare, place-scripts, step-clone
-    - name: prepare # or place-scripts, or step-clone
-      image: your-image-name
-      # ... other container settings ...
-      securityContext:
-        runAsNonRoot: true
-        allowPrivilegeEscalation: false # Good practice when dropping capabilities
-        capabilities:
-          drop:
-            - ALL
-        seccompProfile:
-          type: RuntimeDefault
-    
-    # ... other containers ...
