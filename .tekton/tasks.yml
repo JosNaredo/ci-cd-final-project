@@ -54,6 +54,13 @@ spec:
     - name: nosetests
       image: python:3.9-slim
       workingDir: "$(workspaces.source.path)"
+      securityContext:
+        runAsNonRoot: true
+        capabilities:
+          drop:
+            - ALL
+        seccompProfile:
+          type: RuntimeDefault
       script: |
           #!/bin/bash
           set -e
