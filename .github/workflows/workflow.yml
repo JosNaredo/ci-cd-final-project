@@ -25,21 +25,3 @@ jobs:
           flake8 service --count --max-complexity=10 --max-line-length=127 --statistics
       - name: Run unit testwith nose
         run: nosetests -v --with-spec --spec-color --with-coverage --cover-package=app
-      - name: Run unit tests with nose
-        run: nosetests -v --with-spec --spec-color --with-coverage --cover-package=appapiVersion: tekton.dev/v1beta1
-kind: Task
-metadata:
-  name: checkout
-spec:
-  params:
-    - name: repo-url
-      description: The URL of the git repo to clone
-      type: string
-    - name: branch
-      description: The branch to clone
-      type: string
-  steps:
-    - name: checkout
-      image: bitnami/git:latest
-      command: [git]
-      args: ["clone", "--branch", "$(params.branch)", "$(params.repo-url)"]
