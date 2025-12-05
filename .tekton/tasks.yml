@@ -1,3 +1,17 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: echo
+spec:
+  params:
+    - name: message
+      description: The message to echo
+      type: string
+  steps:
+    - name: echo-message
+      image: alpine:3
+      command: [/bin/echo]
+      args: ["$(params.message)"]
 --- 
 apiVersion: tekton.dev/v1beta1
 kind: Task
@@ -66,3 +80,49 @@ spec:
           pip install -r requirements.txt
           nosetests $(params.args)
 ---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: flake8-lint
+spec:
+  description: Run flake8 lint check on Python code.
+  params:
+    - name: args
+      description: Arguments to pass to flake8
+      type: string
+      default: "--count --max-complexity=10 --max-line-length=127"
+  workspaces:
+    - name: source
+  steps:
+    - name: lint
+      image: python:3.9-slim
+      workingDir: $(workspaces.source.path)
+      securityContext:
+        capabilities:
+          drop: ["ALL"]
+        seccompProfile:
+          type: "RuntimeDefault"
+        runAsNonRoot: true
+      script: |
+        set -e
+        python -m pip install --upgrade pip
+        python -m pip install flake8
+        flake8 . $(params.args)
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: checkout
+spec:
+  params:
+    - name: repo-url
+      description: The URL of the git repo to clone
+      type: string
+    - name: branch
+      description: The branch to clone
+      type: string
+  steps:
+    - name: checkout
+      image: bitnami/git:latest
+      command: [git]
+      args: ["clone", "--branch", "$(params.branch)", "$(params.repo-url)"]
