@@ -16,7 +16,7 @@ spec:
       workingDir: "$(workspaces.source.path)"
       securityContext:
         runAsNonRoot: false
-        runAsUsser: 0
+        runAsUser: 0
         # capabilities:
         #   drop:
         #     - ALL
